@@ -14,6 +14,7 @@ export function startNightlyJob() {
             console.log(`Found ${students.length} students to process.`);
 
             // Get today's date in YYYY-MM-DD format
+            
             const today = new Date().toISOString().split('T')[0] as string;
 
 
@@ -38,7 +39,7 @@ export function startNightlyJob() {
                     const oneWeekAgo = new Date(todayDate); oneWeekAgo.setDate(todayDate.getDate() - 7);
                     const oneMonthAgo = new Date(todayDate); oneMonthAgo.setMonth(todayDate.getMonth() - 1);
                     const oneYearAgo = new Date(todayDate); oneYearAgo.setFullYear(todayDate.getFullYear() - 1);
-                    
+
                     const weekDateString = oneWeekAgo.toISOString().split('T')[0];
                     const monthDateString = oneMonthAgo.toISOString().split('T')[0];
                     const yearDateString = oneYearAgo.toISOString().split('T')[0];
@@ -60,13 +61,14 @@ export function startNightlyJob() {
                     const gfgWeekTotal = weekSnapshot ? gfgTotal - weekSnapshot.gfgTotal! : 0;
                     const gfgMonthTotal = monthSnapshot ? gfgTotal - monthSnapshot.gfgTotal! : 0;
                     const gfgYearTotal = yearSnapshot ? gfgTotal - yearSnapshot.gfgTotal! : 0;
-                    // 4. Now save ALL of it!
+                    
+
                     await db.insert(dailySnapshots).values({
                         studentId: student.id as string,
                         date: today,
                         lcTotal: lcTotal,
                         gfgTotal: gfgTotal,
-                        lcWeekTotal: Math.max(0, lcWeekTotal), // Math.max prevents negative numbers if counts drop
+                        lcWeekTotal: Math.max(0, lcWeekTotal), 
                         lcMonthTotal: Math.max(0, lcMonthTotal),
                         lcYearTotal: Math.max(0, lcYearTotal),
                         gfgWeekTotal: Math.max(0, gfgWeekTotal),
