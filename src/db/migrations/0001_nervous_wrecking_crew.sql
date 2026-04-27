@@ -1,0 +1,1 @@
+ALTER TABLE "daily_snapshots" ADD CONSTRAINT "daily_snapshots_student_id_date_unique" UNIQUE("student_id","date");
