@@ -3,13 +3,13 @@ import Joi from "joi";
 
 export class AddStudentDto extends BaseDto {
     static schema = Joi.object({
-        name: Joi.string().required().min(2).max(50).trim().required(),
-        rollNumber: Joi.string().required().min(13).max(25).trim().required(),
-        batchYear: Joi.number().required().min(new Date().getFullYear() - 5).max(new Date().getFullYear()).required(),
-        email: Joi.string().required().email().trim().required(),
-        course: Joi.string().required().trim().required(),
-        branch: Joi.string().required().trim().required(),
-        section: Joi.string().required(),
+        name: Joi.string().min(2).max(50).trim().required(),
+        rollNumber: Joi.string().min(13).max(25).trim().required(),
+        batchYear: Joi.number().min(new Date().getFullYear()).max(new Date().getFullYear()+4).required(),
+        email: Joi.string().email().trim().required(),
+        course: Joi.string().trim().required(),
+        branch: Joi.string().trim().required(),
+        section: Joi.string().trim().required(),
         leetcodeUserName: Joi.string().optional().allow(null),
         geeksforgeeksUserName: Joi.string().optional().allow(null),
     }).or('leetcodeUserName', 'geeksforgeeksUserName');
