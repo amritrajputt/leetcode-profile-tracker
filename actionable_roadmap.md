@@ -23,6 +23,7 @@ Before we write the automated cron job, we need to prove we can successfully fet
 ## Step 3: The Nightly Cron Job
 Now we scale the fetcher to run automatically for every student.
 
+
 * **Target File:** `src/jobs/nightlyUpdate.ts` (Create this file)
 * **Action:**
   1. Install the `node-cron` package.

@@ -11,6 +11,7 @@ The system will allow the placement head (Admin) to monitor student coding activ
 
 The core of this system relies on decoupling "Static Student Info" from "Changing Progress Data". 
 
+
 ### `students` Table
 Stores the static information of a student.
 - `id` (Primary Key, UUID)
