@@ -1,5 +1,5 @@
 import type { Request,Response, NextFunction } from "express";
-import { BaseDto } from "../dto/base.dto";
+import { BaseDto } from "../dto/base.dto.js";
 import { ApiError } from "../errors/error.js"
 
 export const validateMiddleware = (dto:typeof BaseDto)=>{

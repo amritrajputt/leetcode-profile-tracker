@@ -40,9 +40,9 @@ export function startNightlyJob() {
                     const oneMonthAgo = new Date(todayDate); oneMonthAgo.setMonth(todayDate.getMonth() - 1);
                     const oneYearAgo = new Date(todayDate); oneYearAgo.setFullYear(todayDate.getFullYear() - 1);
 
-                    const weekDateString = oneWeekAgo.toISOString().split('T')[0];
-                    const monthDateString = oneMonthAgo.toISOString().split('T')[0];
-                    const yearDateString = oneYearAgo.toISOString().split('T')[0];
+                    const weekDateString = oneWeekAgo.toISOString().split('T')[0] as string;
+                    const monthDateString = oneMonthAgo.toISOString().split('T')[0] as string;
+                    const yearDateString = oneYearAgo.toISOString().split('T')[0] as string;
 
                     const pastSnapshots = await db.select().from(dailySnapshots).where(
                         and(
