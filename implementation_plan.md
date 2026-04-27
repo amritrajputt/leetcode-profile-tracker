@@ -56,6 +56,7 @@ Stores the historical problem-solving count for every student, taken at midnight
   - *Daily:* `Snapshot(Today) - Snapshot(Yesterday)`
   - *Weekly:* `Snapshot(Today) - Snapshot(Today - 7)`
 - Build API endpoints for Leaderboards (Top 10 daily, weekly, etc.).
+- Build a `GET /api/leaderboard/export` endpoint using `exceljs` to allow admins to download the latest student rankings and scores as an `.xlsx` file.
 - Build the Frontend Admin Dashboard to display these tables.
 
 ### Phase 5: Student Public Form

@@ -50,5 +50,17 @@ Create a public endpoint so students can submit their own usernames.
   2. Take the `roll_no`, `lc_username`, and `gfg_username` from the request body.
   3. **Crucial Check:** Inside the route, call `fetchLeetCodeStats(lc_username)` immediately. If it throws an error (username invalid), return a `400 Bad Request` to the frontend and do NOT save it to the database.
 
+## Step 6: Export to Excel Feature
+Add the ability for admins to download the latest student rankings and scores.
+
+* **Target File:** `src/routes/leaderboardRoutes.ts` and `src/controllers/leaderboardController.ts`
+* **Action:**
+  1. Install `exceljs` (`pnpm add exceljs`).
+  2. Create a `GET /api/leaderboard/export` endpoint.
+  3. Fetch the latest `dailySnapshots` combined with `studentsTable`.
+  4. Build an Excel workbook in memory using `exceljs` with the fetched data.
+  5. Set the response headers (`Content-Type` and `Content-Disposition`) to trigger a file download.
+  6. Stream the workbook to the response.
+
 ---
 *Once you are ready, let me know and we will begin with writing the code for **Step 1**!*

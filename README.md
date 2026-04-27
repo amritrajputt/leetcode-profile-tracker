@@ -86,6 +86,7 @@ pnpm start
 - `GET /api/leaderboard/daily` - Returns the top students based on daily problem-solving velocity.
 - `GET /api/leaderboard/weekly` - Returns the top students based on problems solved in the last 7 days.
 - `GET /api/leaderboard/monthly` - Returns the top students based on problems solved in the last 30 days.
+- `GET /api/leaderboard/export` - Exports the latest student rankings and problem counts to an Excel (`.xlsx`) file.
 
 ### Student Management
 - `POST /api/students/register` - Registers a new student. Validates LeetCode/GFG usernames via a live API ping before saving.
