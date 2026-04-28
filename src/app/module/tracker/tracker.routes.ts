@@ -7,7 +7,10 @@ import { trackController } from "./tracker.controller.js";
 
 
 const router:Router = express.Router();
+const controller = new trackController();
 
-router.post("/add-student", validateMiddleware(AddStudentDto),trackController.addStudent );
+router.post("/add-student", validateMiddleware(AddStudentDto),controller.addStudent );
+router.get("/leaderboard", controller.leaderBoard);
+router.get("/export", controller.exportLeaderboard);
 
 export { router as trackerRoutes };

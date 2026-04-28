@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray,desc } from "drizzle-orm";
 import { db } from '../db/index.js';
 import { studentsTable, dailySnapshots } from '../db/schema.js';
 import { leetcodeScrapper, gfgScrapper } from '../utils/scrapper.js';
@@ -20,7 +20,7 @@ export function startNightlyJob() {
 
             for (const student of students) {
                 console.log(`Processing student: ${student.name} (${student.rollNumber})`);
-
+                
                 let lcTotal = 0;
                 let gfgTotal = 0;
 

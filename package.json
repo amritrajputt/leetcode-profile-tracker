@@ -1,5 +1,5 @@
 {
-  "name": "leetcode profile analyzer",
+  "name": "leetcode profile tracker",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -28,6 +28,7 @@
     "@types/joi": "^17.2.3",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
+    "exceljs": "^4.4.0",
     "express": "^5.2.1",
     "joi": "^18.1.2",
     "node-cron": "^4.2.1",
