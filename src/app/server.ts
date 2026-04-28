@@ -1,15 +1,17 @@
 import type { Express } from "express";
 import express, { type Request, type Response, type NextFunction } from "express";
+import cors from "cors";
 import { trackerRoutes } from "./module/tracker/tracker.routes.js";
 import { authRoutes } from "./module/auth/auth.routes.js";
 import { ApiError } from "./common/errors/error.js";
 import { ApiResponse } from "./common/response/response.js";
 export function createApplication(): Express {
     const app = express();
+    app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
     
-    // Mount routes
+   
     app.use("/api/v1/tracker", trackerRoutes);
     app.use("/api/v1/auth", authRoutes);
 
