@@ -10,7 +10,7 @@ export class AddStudentDto extends BaseDto {
         course: Joi.string().trim().required(),
         branch: Joi.string().trim().required(),
         section: Joi.string().trim().required(),
-        leetcodeUserName: Joi.string().optional().allow(null),
-        geeksforgeeksUserName: Joi.string().optional().allow(null),
+        leetcodeUserName: Joi.string().optional(),
+        geeksforgeeksUserName: Joi.string().optional(),
     }).or('leetcodeUserName', 'geeksforgeeksUserName');
 }

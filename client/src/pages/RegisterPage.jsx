@@ -33,13 +33,18 @@ function RegisterPage() {
     setError("");
 
     try {
+      const payload = {
+        ...form,
+        batchYear: Number(form.batchYear),
+      };
+
+      if (!payload.leetcodeUserName) delete payload.leetcodeUserName;
+      if (!payload.geeksforgeeksUserName) delete payload.geeksforgeeksUserName;
+
       const res = await fetch(`${API_BASE}/tracker/add-student`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          batchYear: Number(form.batchYear),
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
