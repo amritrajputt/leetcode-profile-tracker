@@ -31,8 +31,11 @@ function LandingPage() {
           <Link to="/register" className="btn btn-primary">
             Register as Student <ArrowRight size={18} />
           </Link>
+          <Link to="/leaderboard" className="btn btn-outline" style={{ background: "var(--accent-primary)", color: "white", borderColor: "var(--accent-primary)"}}>
+            View Leaderboard
+          </Link>
           <Link to="/login" className="btn btn-outline">
-            Admin Dashboard
+            Admin Login
           </Link>
         </div>
       </section>

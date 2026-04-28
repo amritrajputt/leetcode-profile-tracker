@@ -5,6 +5,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import SuccessPage from "./pages/SuccessPage";
+import PublicLeaderboardPage from "./pages/PublicLeaderboardPage";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/success" element={<SuccessPage />} />
+        <Route path="/leaderboard" element={<PublicLeaderboardPage />} />
       </Routes>
     </BrowserRouter>
   );

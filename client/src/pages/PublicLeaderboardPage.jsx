@@ -1,33 +1,21 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { Search, Download, LogOut, Users, Code, Trophy, Layers } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, Users, Code, Trophy, Layers, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
-import "./DashboardPage.css";
+import "./DashboardPage.css"; // Reuse dashboard styles
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1";
 
-function DashboardPage() {
-  const navigate = useNavigate();
+function PublicLeaderboardPage() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [batch, setBatch] = useState("");
   const [search, setSearch] = useState("");
 
-  const token = localStorage.getItem("token");
-  const faculty = JSON.parse(localStorage.getItem("faculty") || "{}");
-
-  // Auth guard
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    }
-  }, [token, navigate]);
-
   // Fetch leaderboard data
   useEffect(() => {
-    if (!token) return;
     fetchLeaderboard();
-  }, [batch, token]);
+  }, [batch]);
 
   const fetchLeaderboard = async () => {
     setLoading(true);
@@ -36,19 +24,10 @@ function DashboardPage() {
         ? `${API_BASE}/tracker/leaderboard?batch=${batch}`
         : `${API_BASE}/tracker/leaderboard`;
 
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      const res = await fetch(url);
       const data = await res.json();
 
       if (!res.ok) {
-        if (res.status === 401) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("faculty");
-          navigate("/login");
-          return;
-        }
         toast.error(data.message || "Failed to fetch data");
         return;
       }
@@ -82,47 +61,6 @@ function DashboardPage() {
     return { total, avgLc, avgGfg, batches };
   }, [students]);
 
-  // Export Excel
-  const handleExport = async () => {
-    try {
-      const url = batch
-        ? `${API_BASE}/tracker/export?batch=${batch}`
-        : `${API_BASE}/tracker/export`;
-
-      const res = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) {
-        toast.error("Export failed");
-        return;
-      }
-
-      const buffer = await res.arrayBuffer();
-      const blob = new Blob([buffer], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `leaderboard${batch ? `_${batch}` : ""}.xlsx`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(link.href);
-      toast.success("Excel downloaded!");
-    } catch (err) {
-      toast.error("Export failed");
-    }
-  };
-
-  // Logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("faculty");
-    toast.success("Logged out");
-    navigate("/");
-  };
-
   // Get rank class
   const getRankClass = (i) => {
     if (i === 0) return "rank-gold";
@@ -149,7 +87,9 @@ function DashboardPage() {
       <nav className="navbar">
         <span className="navbar-logo">All Eyes On You</span>
         <div className="navbar-actions">
-          <span className="navbar-welcome">Hi, {faculty.name || "Admin"}</span>
+          <Link to="/" className="btn btn-outline btn-sm">
+            <ArrowLeft size={16} /> Back Home
+          </Link>
           <select
             className="form-select"
             value={batch}
@@ -162,12 +102,6 @@ function DashboardPage() {
               </option>
             ))}
           </select>
-          <button className="btn btn-primary btn-sm" onClick={handleExport}>
-            <Download size={16} /> Export
-          </button>
-          <button className="btn btn-danger btn-sm" onClick={handleLogout}>
-            <LogOut size={16} /> Logout
-          </button>
         </div>
       </nav>
 
@@ -199,7 +133,7 @@ function DashboardPage() {
         {/* Search + Table */}
         <div className="leaderboard-section fade-in-up" style={{ animationDelay: "0.1s" }}>
           <div className="leaderboard-header">
-            <h2><Trophy size={22} /> Leaderboard</h2>
+            <h2><Trophy size={22} /> Public Leaderboard</h2>
             <div className="search-bar">
               <Search size={16} className="search-icon" />
               <input
@@ -262,4 +196,4 @@ function DashboardPage() {
   );
 }
 
-export default DashboardPage;
+export default PublicLeaderboardPage;

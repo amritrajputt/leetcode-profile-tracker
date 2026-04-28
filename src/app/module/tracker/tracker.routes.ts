@@ -10,7 +10,7 @@ const router:Router = express.Router();
 const controller = new trackController();
 
 router.post("/add-student", validateMiddleware(AddStudentDto),controller.addStudent );
-router.get("/leaderboard", requireAuth, controller.leaderBoard);
+router.get("/leaderboard", controller.leaderBoard);
 router.get("/export", requireAuth, controller.exportLeaderboard);
 
 export { router as trackerRoutes };
