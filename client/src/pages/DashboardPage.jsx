@@ -4,7 +4,7 @@ import { Search, Download, LogOut, Users, Code, Trophy, Layers } from "lucide-re
 import toast from "react-hot-toast";
 import "./DashboardPage.css";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8081/api/v1";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1";
 
 function DashboardPage() {
   const navigate = useNavigate();

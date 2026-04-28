@@ -4,7 +4,7 @@ import { ArrowLeft, Lock, Eye, EyeOff, Shield } from "lucide-react";
 import toast from "react-hot-toast";
 import "./LoginPage.css";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8081/api/v1";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1";
 
 function LoginPage() {
   const navigate = useNavigate();

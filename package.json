@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "tsc-watch --onSuccess \"node dist/index.js\"",
-    "dev": "tsc-watch",
+    "start": "node dist/index.js",
+    "dev": "tsc-watch --onSuccess \"node dist/index.js\"",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -24,7 +25,8 @@
     "@types/node-cron": "^3.0.11",
     "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "@types/express": "^5.0.6",
