@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import express, { type Request, type Response, type NextFunction } from "express";
 import { trackerRoutes } from "./module/tracker/tracker.routes.js";
+import { authRoutes } from "./module/auth/auth.routes.js";
 import { ApiError } from "./common/errors/error.js";
 import { ApiResponse } from "./common/response/response.js";
 export function createApplication(): Express {
@@ -10,6 +11,7 @@ export function createApplication(): Express {
     
     // Mount routes
     app.use("/api/v1/tracker", trackerRoutes);
+    app.use("/api/v1/auth", authRoutes);
 
     // Global Error Handler
     app.use((err: any, req: Request, res: Response, next: NextFunction) => {
@@ -18,7 +20,7 @@ export function createApplication(): Express {
             return;
         }
         console.error(err);
-        res.status(500).json(ApiResponse.error("Internal Server Error", 500, null));
+        res.status(500).json(ApiResponse.error(err.message || "Internal Server Error", 500, { stack: err.stack, name: err.constructor.name }));
     });
 
     return app;

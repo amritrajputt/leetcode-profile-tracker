@@ -35,6 +35,8 @@ export class trackController {
         res.status(201).json(ApiResponse.created("Student added successfully", student[0]));
     }
     public async leaderBoard(req: Request, res: Response) {
+        const { batch } = req.query;
+
         //latest snapshot date for each student
         const latestSnapshots = db
             .select({
@@ -66,12 +68,15 @@ export class trackController {
                     eq(dailySnapshots.date, sql`CAST(${latestSnapshots.maxDate} AS DATE)`)
                 )
             )
+            .where(batch ? eq(studentsTable.batchYear, Number(batch)) : undefined)
             .orderBy(desc(sql`total_solved`));
 
         res.status(200).json(ApiResponse.success("Leaderboard fetched successfully", 200, leaderboardData));
     }
 
     public async exportLeaderboard(req: Request, res: Response) {
+        const { batch } = req.query;
+
         // 1. Fetch exact same data as leaderboard
         const latestSnapshots = db
             .select({
@@ -101,6 +106,7 @@ export class trackController {
                     eq(dailySnapshots.date, sql`CAST(${latestSnapshots.maxDate} AS DATE)`)
                 )
             )
+            .where(batch ? eq(studentsTable.batchYear, Number(batch)) : undefined)
             .orderBy(desc(sql`total_solved`));
 
         // 2. Create Excel Workbook

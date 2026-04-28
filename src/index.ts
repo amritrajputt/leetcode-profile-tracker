@@ -7,6 +7,7 @@ const port = process.env.PORT || 8080;
 async function main() {
     try {
         const server = createServer(createApplication());
+        console.log("Triggering restart for new PORT...");
         server.listen(port, async () => {
             console.log(`Server running on port ${port}`);
             await startNightlyJob();
