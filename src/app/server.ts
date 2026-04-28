@@ -20,7 +20,7 @@ export function createApplication(): Express {
             return;
         }
         console.error(err);
-        res.status(500).json(ApiResponse.error(err.message || "Internal Server Error", 500, { stack: err.stack, name: err.constructor.name }));
+        res.status(500).json(ApiResponse.error("Internal Server Error", 500, null));
     });
 
     return app;
