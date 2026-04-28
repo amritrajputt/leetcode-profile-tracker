@@ -110,3 +110,4 @@ async function runNow() {
 }
 
 runNow();
+// to run : npx tsx src/scripts/runCronNow.ts
