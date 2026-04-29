@@ -7,8 +7,25 @@ import { eq, desc, sql, and } from "drizzle-orm";
 import ExcelJS from "exceljs";
 import { ApiResponse } from "../../common/response/response.js";
 import { leetcodeScrapper, gfgScrapper } from "../../../utils/scrapper.js";
+import { runDataSync } from "../../../jobs/nightlyUpdate.js";
 
 export class trackController {
+    public async triggerUpdate(req: Request, res: Response) {
+        // We secure this endpoint with a simple secret key in headers
+        const cronSecret = req.headers['x-cron-secret'];
+        const envSecret = process.env.CRON_SECRET || "default_super_secret_key";
+        
+        if (cronSecret !== envSecret) {
+            throw ApiError.unAuthorized("Invalid or missing cron secret key");
+        }
+
+        // Run the sync asynchronously in the background so Render doesn't timeout the HTTP connection.
+        // This is important because 100 students taking 2.5s each = 250s, which exceeds most timeout limits.
+        runDataSync().catch(err => console.error("Error in async background sync:", err));
+
+        // Immediately respond 202 Accepted to the cron service
+        res.status(202).json(ApiResponse.success("Sync process started in the background", 202, null));
+    }
     public async addStudent(req: Request, res: Response) {
         const { name, rollNumber, batchYear, email, course, branch, section, leetcodeUserName, geeksforgeeksUserName } = req.body;
 
