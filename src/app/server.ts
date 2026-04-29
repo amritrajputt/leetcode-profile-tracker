@@ -15,6 +15,11 @@ export function createApplication(): Express {
     app.use("/api/v1/tracker", trackerRoutes);
     app.use("/api/v1/auth", authRoutes);
 
+    // Health check endpoint for UptimeRobot / cron-job.org
+    app.get("/api/v1/health", (req: Request, res: Response) => {
+        res.status(200).json(ApiResponse.success("Server is awake", 200, null));
+    });
+
     // Global Error Handler
     app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         if (err instanceof ApiError) {
