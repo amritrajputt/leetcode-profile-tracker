@@ -8,6 +8,10 @@ import ExcelJS from "exceljs";
 import { ApiResponse } from "../../common/response/response.js";
 import { leetcodeScrapper, gfgScrapper } from "../../../utils/scrapper.js";
 import { runDataSync } from "../../../jobs/nightlyUpdate.js";
+import NodeCache from "node-cache";
+
+// Initialize in-memory cache with 5 minutes TTL (300 seconds)
+const cache = new NodeCache({ stdTTL: 300 });
 
 export class trackController {
     public async triggerUpdate(req: Request, res: Response) {
@@ -49,10 +53,20 @@ export class trackController {
             rollNumber: studentsTable.rollNumber,
         });
 
+        // Clear cache so the new student appears on the leaderboard instantly
+        cache.flushAll();
+
         res.status(201).json(ApiResponse.created("Student added successfully", student[0]));
     }
     public async leaderBoard(req: Request, res: Response) {
         const { batch } = req.query;
+        const cacheKey = `leaderboard_${batch || 'all'}`;
+
+        // 1. Check Cache
+        const cachedData = cache.get(cacheKey);
+        if (cachedData) {
+            return res.status(200).json(ApiResponse.success("Leaderboard fetched successfully", 200, cachedData));
+        }
 
         //latest snapshot date for each student
         const latestSnapshots = db
@@ -87,6 +101,9 @@ export class trackController {
             )
             .where(batch ? eq(studentsTable.batchYear, Number(batch)) : undefined)
             .orderBy(desc(sql`total_solved`));
+
+        // 2. Save to Cache
+        cache.set(cacheKey, leaderboardData);
 
         res.status(200).json(ApiResponse.success("Leaderboard fetched successfully", 200, leaderboardData));
     }
