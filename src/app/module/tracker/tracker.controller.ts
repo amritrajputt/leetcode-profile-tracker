@@ -9,6 +9,8 @@ import { ApiResponse } from "../../common/response/response.js";
 import { leetcodeScrapper, gfgScrapper } from "../../../utils/scrapper.js";
 import { runDataSync } from "../../../jobs/nightlyUpdate.js";
 import NodeCache from "node-cache";
+import dotenv from "dotenv";
+dotenv.config();
 
 // Initialize in-memory cache with 5 minutes TTL (300 seconds)
 const cache = new NodeCache({ stdTTL: 300 });
@@ -31,7 +33,12 @@ export class trackController {
         res.status(202).json(ApiResponse.success("Sync process started in the background", 202, null));
     }
     public async addStudent(req: Request, res: Response) {
-        const { name, rollNumber, batchYear, email, course, branch, section, leetcodeUserName, geeksforgeeksUserName } = req.body;
+        const { name, rollNumber, batchYear, email, course, branch, section, leetcodeUserName, geeksforgeeksUserName, accessCode } = req.body;
+
+        const expectedCode = process.env.COLLEGE_ACCESS_CODE || "AIMT2024";
+        if (accessCode !== expectedCode) {
+            throw ApiError.unAuthorized("Invalid College Access Code");
+        }
 
         const isExist = await db.select().from(studentsTable).where(eq(studentsTable.rollNumber, rollNumber));
         if (isExist.length > 0) {

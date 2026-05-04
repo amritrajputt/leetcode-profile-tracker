@@ -4,7 +4,8 @@ import Joi from "joi";
 export class AddStudentDto extends BaseDto {
     static schema = Joi.object({
         name: Joi.string().min(2).max(50).trim().required(),
-        rollNumber: Joi.string().min(13).max(25).trim().required(),
+        rollNumber: Joi.string().min(5).max(25).trim().required(),
+        accessCode: Joi.string().trim().required(),
         batchYear: Joi.number().min(new Date().getFullYear()).max(new Date().getFullYear()+4).required(),
         email: Joi.string().email().trim().required(),
         course: Joi.string().trim().required(),

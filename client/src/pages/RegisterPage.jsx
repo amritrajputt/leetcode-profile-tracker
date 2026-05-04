@@ -20,6 +20,7 @@ function RegisterPage() {
     section: "",
     leetcodeUserName: "",
     geeksforgeeksUserName: "",
+    accessCode: "",
   });
 
   const handleChange = (e) => {
@@ -190,6 +191,23 @@ function RegisterPage() {
                   name="section"
                   placeholder="e.g., A"
                   value={form.section}
+                  onChange={handleChange}
+                  required
+                  style={{ paddingLeft: "40px" }}
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">College Access Code</label>
+              <div className="form-input-icon">
+                <Hash size={16} className="input-prefix-icon" />
+                <input
+                  className="form-input"
+                  name="accessCode"
+                  type="password"
+                  placeholder="Ask your CR for the code"
+                  value={form.accessCode}
                   onChange={handleChange}
                   required
                   style={{ paddingLeft: "40px" }}
