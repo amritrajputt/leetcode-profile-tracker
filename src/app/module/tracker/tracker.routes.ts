@@ -11,6 +11,7 @@ const controller = new trackController();
 
 router.post("/add-student", validateMiddleware(AddStudentDto),controller.addStudent );
 router.get("/leaderboard", controller.leaderBoard);
+router.get("/student/:id/history", controller.getStudentHistory);
 router.get("/export", requireAuth, controller.exportLeaderboard);
 router.post("/sync", controller.triggerUpdate);
 

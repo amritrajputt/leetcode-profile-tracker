@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Search, Users, Code, Trophy, Layers, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
 import "./DashboardPage.css"; // Reuse dashboard styles
+import StudentChartModal from "./StudentChartModal";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1";
 
@@ -11,6 +12,7 @@ function PublicLeaderboardPage() {
   const [loading, setLoading] = useState(true);
   const [batch, setBatch] = useState("");
   const [search, setSearch] = useState("");
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   // Fetch leaderboard data
   useEffect(() => {
@@ -171,7 +173,13 @@ function PublicLeaderboardPage() {
                 </thead>
                 <tbody>
                   {filtered.map((student, i) => (
-                    <tr key={student.id || i} className={getRankClass(i)}>
+                    <tr 
+                      key={student.id || i} 
+                      className={getRankClass(i)}
+                      onClick={() => setSelectedStudent(student)}
+                      style={{ cursor: "pointer" }}
+                      title="Click to view progress chart"
+                    >
                       <td className="rank-cell">{getRankDisplay(i)}</td>
                       <td className="name-cell">{student.name}</td>
                       <td>{student.rollNumber}</td>
@@ -192,6 +200,13 @@ function PublicLeaderboardPage() {
           )}
         </div>
       </div>
+
+      {selectedStudent && (
+        <StudentChartModal 
+          student={selectedStudent} 
+          onClose={() => setSelectedStudent(null)} 
+        />
+      )}
     </div>
   );
 }

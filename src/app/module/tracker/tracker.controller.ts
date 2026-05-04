@@ -183,4 +183,21 @@ export class trackController {
         await workbook.xlsx.write(res);
         res.end();
     }
+
+    public async getStudentHistory(req: Request, res: Response) {
+        const { id } = req.params;
+        
+        const history = await db
+            .select({
+                date: dailySnapshots.date,
+                lcTotal: dailySnapshots.lcTotal,
+                gfgTotal: dailySnapshots.gfgTotal,
+                totalSolved: sql<number>`COALESCE(${dailySnapshots.lcTotal}, 0) + COALESCE(${dailySnapshots.gfgTotal}, 0)`.as('total_solved')
+            })
+            .from(dailySnapshots)
+            .where(eq(dailySnapshots.studentId, id))
+            .orderBy(sql`${dailySnapshots.date} ASC`);
+
+        res.status(200).json(ApiResponse.success("History fetched successfully", 200, history));
+    }
 }
