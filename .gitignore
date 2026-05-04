@@ -288,3 +288,4 @@ vite.config.ts.timestamp-*
 # Documentation
 actionable_roadmap.md
 implementation_plan.md
+src/scripts/runEmailNow.ts
