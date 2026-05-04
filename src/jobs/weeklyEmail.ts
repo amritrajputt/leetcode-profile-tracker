@@ -36,7 +36,8 @@ export const runWeeklyReport = async () => {
                 rollNumber: studentsTable.rollNumber,
                 lcWeekTotal: dailySnapshots.lcWeekTotal,
                 gfgWeekTotal: dailySnapshots.gfgWeekTotal,
-                totalWeeklySolved: sql<number>`COALESCE(${dailySnapshots.lcWeekTotal}, 0) + COALESCE(${dailySnapshots.gfgWeekTotal}, 0)`.as('total_weekly')
+                totalWeeklySolved: sql<number>`COALESCE(${dailySnapshots.lcWeekTotal}, 0) + COALESCE(${dailySnapshots.gfgWeekTotal}, 0)`.as('total_weekly'),
+                totalSolved: sql<number>`COALESCE(${dailySnapshots.lcTotal}, 0) + COALESCE(${dailySnapshots.gfgTotal}, 0)`.as('total_solved')
             })
             .from(studentsTable)
             .innerJoin(
@@ -46,7 +47,10 @@ export const runWeeklyReport = async () => {
                     eq(dailySnapshots.date, sql`CAST(${maxDateStr} AS DATE)`)
                 )
             )
-            .orderBy(desc(sql`total_weekly`))
+            .orderBy(
+                desc(sql`total_weekly`),
+                desc(sql`total_solved`)
+            )
             .limit(3);
 
         if (topStudents.length === 0) {

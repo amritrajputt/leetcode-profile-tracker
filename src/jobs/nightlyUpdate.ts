@@ -43,16 +43,20 @@ export async function runDataSync() {
                 const monthDateString = oneMonthAgo.toISOString().split('T')[0] as string;
                 const yearDateString = oneYearAgo.toISOString().split('T')[0] as string;
 
+                // Fetch all past snapshots for this student before today
                 const pastSnapshots = await db.select().from(dailySnapshots).where(
                     and(
                         eq(dailySnapshots.studentId, student.id),
-                        inArray(dailySnapshots.date, [weekDateString, monthDateString, yearDateString])
+                        sql`${dailySnapshots.date} < ${today}`
                     )
-                );
+                ).orderBy(desc(dailySnapshots.date));
 
-                const weekSnapshot = pastSnapshots.find(s => s.date === weekDateString);
-                const monthSnapshot = pastSnapshots.find(s => s.date === monthDateString);
-                const yearSnapshot = pastSnapshots.find(s => s.date === yearDateString);
+                // Find snapshot closest to 7 days ago, or fallback to the oldest available snapshot
+                const weekSnapshot = pastSnapshots.find(s => s.date <= weekDateString) || pastSnapshots[pastSnapshots.length - 1];
+                // Find snapshot closest to 30 days ago, or fallback to the oldest available snapshot
+                const monthSnapshot = pastSnapshots.find(s => s.date <= monthDateString) || pastSnapshots[pastSnapshots.length - 1];
+                // Find snapshot closest to 365 days ago, or fallback to the oldest available snapshot
+                const yearSnapshot = pastSnapshots.find(s => s.date <= yearDateString) || pastSnapshots[pastSnapshots.length - 1];
 
                 const lcWeekTotal = weekSnapshot ? lcTotal - weekSnapshot.lcTotal! : 0;
                 const lcMonthTotal = monthSnapshot ? lcTotal - monthSnapshot.lcTotal! : 0;
