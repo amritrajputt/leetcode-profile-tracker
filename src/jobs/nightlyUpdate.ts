@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { eq, and, inArray,desc } from "drizzle-orm";
+import { eq, and, inArray, desc, sql } from "drizzle-orm";
 import { db } from '../db/index.js';
 import { studentsTable, dailySnapshots } from '../db/schema.js';
 import { leetcodeScrapper, gfgScrapper } from '../utils/scrapper.js';

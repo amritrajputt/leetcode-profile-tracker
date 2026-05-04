@@ -195,7 +195,7 @@ export class trackController {
                 totalSolved: sql<number>`COALESCE(${dailySnapshots.lcTotal}, 0) + COALESCE(${dailySnapshots.gfgTotal}, 0)`.as('total_solved')
             })
             .from(dailySnapshots)
-            .where(eq(dailySnapshots.studentId, id))
+            .where(eq(dailySnapshots.studentId, id as string))
             .orderBy(sql`${dailySnapshots.date} ASC`);
 
         res.status(200).json(ApiResponse.success("History fetched successfully", 200, history));
