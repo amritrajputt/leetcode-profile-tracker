@@ -5,6 +5,16 @@ export interface ScraperResult {
     hardSolved?: number;
 }
 
+const USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+];
+function getRandomUserAgent(): string {
+    return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] as string;
+}
 
 export async function leetcodeScrapper(userName: string): Promise<ScraperResult> {
     const query = `
@@ -25,6 +35,7 @@ export async function leetcodeScrapper(userName: string): Promise<ScraperResult>
             headers: {
                 "Content-Type": "application/json",
                 "Referer": "https://leetcode.com/",
+                "User-Agent": getRandomUserAgent(),
             },
             body: JSON.stringify({
                 query,
@@ -39,7 +50,7 @@ export async function leetcodeScrapper(userName: string): Promise<ScraperResult>
         const json = (await response.json()) as any;
         
         if (!json.data || !json.data.matchedUser) {
-            console.log(`LeetCode user ${userName} not found.`);
+            // Silently return 0 if user is not found to avoid log spam
             return { totalSolved: 0 };
         }
 
@@ -65,10 +76,11 @@ export async function leetcodeScrapper(userName: string): Promise<ScraperResult>
 }
 
 export async function gfgScrapper(userName: string): Promise<ScraperResult> {
+    
     try {
         const response = await fetch(`https://www.geeksforgeeks.org/user/${userName}/`, {
             headers: {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                "User-Agent": getRandomUserAgent()
             }
         });
 
@@ -86,7 +98,7 @@ export async function gfgScrapper(userName: string): Promise<ScraperResult> {
             };
         }
         
-        console.log(`GFG user ${userName} not found or data missing.`);
+        // Silently return 0 if user is not found to avoid log spam
         return { totalSolved: 0 };
     } catch (error) {
         console.error("Error fetching GeeksforGeeks data:", error);

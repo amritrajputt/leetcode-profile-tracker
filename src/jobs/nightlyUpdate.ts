@@ -14,8 +14,11 @@ export async function runDataSync() {
         // Get today's date in YYYY-MM-DD format
         const today = new Date().toISOString().split('T')[0] as string;
 
+        let successCount = 0;
+        let failCount = 0;
+
         for (const student of students) {
-            console.log(`Processing student: ${student.name} (${student.rollNumber})`);
+            // Removed individual student log to keep console clean
             
             let lcTotal = 0;
             let gfgTotal = 0;
@@ -84,18 +87,21 @@ export async function runDataSync() {
                     }
                 });
 
-                console.log(`Successfully updated ${student.rollNumber}`);
+                successCount++;
 
             } catch (err) {
                 // Crucial: Use try/catch inside the loop so one failed student doesn't crash the whole job
                 console.error(`Failed to process student ${student.rollNumber}:`, err);
+                failCount++;
             }
 
-            // delay to prevent rate-limiting
-            await new Promise(resolve => setTimeout(resolve, 2500));
+            // delay with jitter (2s to 6s) to prevent rate-limiting
+            const delay = Math.floor(Math.random() * (6000 - 2000 + 1) + 2000);
+            // Silent wait
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
 
-        console.log("Nightly update completed successfully.");
+        console.log(`Nightly update completed. Success: ${successCount}, Failed: ${failCount}`);
 
     } catch (error) {
         console.error("Critical error in nightly cron job:", error);
