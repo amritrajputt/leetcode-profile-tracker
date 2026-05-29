@@ -3,6 +3,50 @@ import { eq, and, inArray, desc, sql } from "drizzle-orm";
 import { db } from '../db/index.js';
 import { studentsTable, dailySnapshots } from '../db/schema.js';
 import { leetcodeScrapper, gfgScrapper } from '../utils/scrapper.js';
+import { cache } from '../utils/cache.js';
+
+export async function syncStudentInitialStats(student: any) {
+    const today = new Date().toISOString().split('T')[0] as string;
+    let lcTotal = 0;
+    let gfgTotal = 0;
+
+    try {
+        if (student.leetcodeUserName) {
+            const lcResult = await leetcodeScrapper(student.leetcodeUserName);
+            lcTotal = lcResult.totalSolved || 0;
+        }
+
+        if (student.geeksforgeeksUserName) {
+            const gfgResult = await gfgScrapper(student.geeksforgeeksUserName);
+            gfgTotal = gfgResult.totalSolved || 0;
+        }
+
+        await db.insert(dailySnapshots).values({
+            studentId: student.id as string,
+            date: today,
+            lcTotal: lcTotal,
+            gfgTotal: gfgTotal,
+            lcWeekTotal: 0,
+            lcMonthTotal: 0,
+            lcYearTotal: 0,
+            gfgWeekTotal: 0,
+            gfgMonthTotal: 0,
+            gfgYearTotal: 0,
+        }).onConflictDoUpdate({
+            target: [dailySnapshots.studentId, dailySnapshots.date],
+            set: {
+                lcTotal: lcTotal,
+                gfgTotal: gfgTotal,
+            }
+        });
+
+        // Flush cache so the student instantly appears on the leaderboard
+        cache.flushAll();
+        console.log(`Initial sync completed for student: ${student.rollNumber}`);
+    } catch (err) {
+        console.error(`Failed to perform initial sync for student ${student.rollNumber}:`, err);
+    }
+}
 
 export async function runDataSync() {
     console.log("Starting nightly student data update...");
@@ -106,8 +150,17 @@ export async function runDataSync() {
         }
 
         console.log(`Nightly update completed. Success: ${successCount}, Failed: ${failCount}`);
+        cache.flushAll();
 
     } catch (error) {
         console.error("Critical error in nightly cron job:", error);
     }
 }
+
+// Schedule to run every day at Midnight
+export const startNightlyUpdateCron = () => {
+    cron.schedule('0 0 * * *', () => {
+        runDataSync();
+    });
+    console.log("Nightly Update Cron Job Scheduled (Daily 12:00 AM)");
+};

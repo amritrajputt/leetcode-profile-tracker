@@ -7,13 +7,10 @@ import { eq, desc, sql, and } from "drizzle-orm";
 import ExcelJS from "exceljs";
 import { ApiResponse } from "../../common/response/response.js";
 import { leetcodeScrapper, gfgScrapper } from "../../../utils/scrapper.js";
-import { runDataSync } from "../../../jobs/nightlyUpdate.js";
-import NodeCache from "node-cache";
+import { runDataSync, syncStudentInitialStats } from "../../../jobs/nightlyUpdate.js";
+import { cache } from "../../../utils/cache.js";
 import dotenv from "dotenv";
 dotenv.config();
-
-// Initialize in-memory cache with 5 minutes TTL (300 seconds)
-const cache = new NodeCache({ stdTTL: 300 });
 
 export class trackController {
     public async triggerUpdate(req: Request, res: Response) {
@@ -55,15 +52,23 @@ export class trackController {
             section,
             leetcodeUserName,
             geeksforgeeksUserName,
-        }).returning({
-            name: studentsTable.name,
-            rollNumber: studentsTable.rollNumber,
-        });
+        }).returning();
+
+        const createdStudent = student[0];
+        if (!createdStudent) {
+            throw ApiError.badRequest("Failed to register student");
+        }
+
+        // Run initial sync in the background so registration isn't blocked/delayed
+        syncStudentInitialStats(createdStudent).catch(err => console.error("Error in background initial sync:", err));
 
         // Clear cache so the new student appears on the leaderboard instantly
         cache.flushAll();
 
-        res.status(201).json(ApiResponse.created("Student added successfully", student[0]));
+        res.status(201).json(ApiResponse.created("Student added successfully", {
+            name: createdStudent.name,
+            rollNumber: createdStudent.rollNumber
+        }));
     }
     public async leaderBoard(req: Request, res: Response) {
         const { batch } = req.query;

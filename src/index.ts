@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { createApplication } from './app/server.js';
 import { startWeeklyEmailCron } from './jobs/weeklyEmail.js';
+import { startNightlyUpdateCron } from './jobs/nightlyUpdate.js';
 const port = process.env.PORT || 4000;
 
 async function main() {
@@ -11,6 +12,7 @@ async function main() {
         
         // Start background cron jobs
         startWeeklyEmailCron();
+        startNightlyUpdateCron();
 
         server.listen(port, async () => {
             console.log(`Server running on port ${port}`);
